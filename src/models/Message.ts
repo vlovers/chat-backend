@@ -1,39 +1,29 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
+import { IDialog } from "./Dialog";
 
 export interface IMessage extends Document {
-    text: {
-        type: string,
-        require: boolean
-    };
-
-    dialog: {
-        // type: Schema.Types.ObjectId,
-        // ref: string,
-        // require: boolean
-    };
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: string,
-        required: boolean
-    };
-    unread: {
-        // type: boolean,
-        // default: boolean
-    };
+  text: string;
+  dialog: IDialog | string;
+  read: boolean;
 }
 
-const MessageSchema = new Schema({
-    text: { type: String },
-    dialog: { type: Schema.Types.ObjectId, ref: 'Dialogs', required: true },
-    user: { type: Schema.Types.ObjectId, ref: "Users", required: true },
-    unread: { type: Boolean, default: false },
-    attachments: [{ type: Schema.Types.ObjectId, ref: "UploadFiles", required: true }]
-},
-{
+const MessageSchema = new Schema(
+  {
+    text: { type: String, require: Boolean },
+    dialog: { type: Schema.Types.ObjectId, ref: "Dialog", require: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", require: true },
+    read: {
+      type: Boolean,
+      default: false,
+    },
+    attachments: [{ type: Schema.Types.ObjectId, ref: "UploadFile" }],
+  },
+  {
     timestamps: true,
-    usePushEach: true
-});
+    usePushEach: true,
+  }
+);
 
-const MessageModel = mongoose.model<IMessage>('Messages', MessageSchema);
+const MessageModel = mongoose.model<IMessage>("Message", MessageSchema);
 
 export default MessageModel;
